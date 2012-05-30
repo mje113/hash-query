@@ -1,5 +1,4 @@
 require 'hash_query/version'
-require 'pry'
 
 module HashQuery
 
