@@ -4,54 +4,54 @@ class TestHquery < MiniTest::Unit::TestCase
 
    def setup
     @movie = {
-      :title  => 'Goodfellas',
-      :rating => 'R',
-      :encodings => ['a', 'b', 'c'],
-      :media  => [
+      'title'  => 'Goodfellas',
+      'rating' => 'R',
+      'encodings' => ['a', 'b', 'c'],
+      'media'  => [
         {
-          :type => 'hd',
-          :encoding => 'h264'
+          'type' => 'hd',
+          'encoding' => 'h264'
         },
         {
-          :type => 'sd',
-          :encoding => 'mpeg2'
+          'type' => 'sd',
+          'encoding' => 'mpeg2'
         }
       ],
-      :actors => [
+      'actors' => [
         {
-          :name => 'Robert De Niro',
-          :role => 'James Conway',
-          :awards => {
-            :academy => 2,
-            :emmies  => 5
+          'name' => 'Robert De Niro',
+          'role' => 'James Conway',
+          'awards' => {
+            'academy' => 2,
+            'emmies'  => 5
           }
         },
         {
-          :name => 'Ray Liotta',
-          :role => 'Henry Hill'
+          'name' => 'Ray Liotta',
+          'role' => 'Henry Hill'
         }
       ],
-      :director => {
-        :name => 'Martin Scorsese',
-        :award_count => 23
+      'director' => {
+        'name' => 'Martin Scorsese',
+        'award_count' => 23
       }
     }
 
     @hquery = { 
-          :a => 1, 
-          :b => { 
-            :c => {
-              :d => { 
-                :e => 2, 
-                :f => 3 
+          'a' => 1, 
+          'b' => { 
+            'c' => {
+              'd' => { 
+                'e' => 2, 
+                'f' => 3 
               }
             },
-            :cc => [
+            'cc' => [
               3,
               {
-                :g => 6,
-                :h => 7,
-                :i => [ 8, 9, 10, 11 ]
+                'g' => 6,
+                'h' => 7,
+                'i' => [ 8, 9, 10, 11 ]
               },
               4,
               5
@@ -98,6 +98,29 @@ class TestHquery < MiniTest::Unit::TestCase
    
   def test_can_be_querried_for_multiple_values
     assert_equal ['Robert De Niro', 'Ray Liotta'], @movie.query('actors name')
+  end
+
+  def test_can_query_for_type
+    assert_equal 'Goodfellas', @movie.query('title:string')
+  end
+
+  def test_can_deep_query_for_type
+    assert_equal 2, @movie.query('academy:fixnum')
+    assert_equal 2, @movie.query('actors awards academy:fixnum')
+  end
+
+  def test_will_return_nil_if_type_is_not_matched
+    assert_equal nil, @movie.query('title:fixnum')
+  end
+
+  def test_can_query_for_complex_type
+    assert_equal ['a', 'b', 'c'], @movie.query('encodings:array')
+  end
+
+  def test_raises_exception_if_type_not_found
+    assert_raises NameError do
+      @movie.query('title:bogus')
+    end
   end
 
 end

@@ -1,13 +1,9 @@
 require 'hash_query/version'
 require 'pry'
 
-class Hash
-  include HashQuery::HashExtension
-end
-
 module HashQuery
 
-  module HashExtension
+  module Extension
 
     # Public: Scans the hash data strucure looking for keys that match the 
     # psuedo css selector.
@@ -40,14 +36,26 @@ module HashQuery
     #     entity.query('a')         # => 1
     #     entity.query('a b c d e') # => 2
     #     entity.query('c d e')     # => 2
+    #     entity.query('a>string')
+    #     entity.query('a:string')
     #
     # Returns a value or collection of values that are found.
     def query(selectors)
       @_query ||= HashQuery::Query.new(self)
       @_query.query(selectors)
-      
-      selectors = selectors.split(/ /)
-      found = _descend(selectors, self, [])
+    end
+
+  end
+
+  class Query
+
+    def initialize(hash)
+      @hash = hash
+    end
+
+    def query(selectors)
+      selectors = Selector.parse(selectors)
+      found = descend(selectors, @hash, [])
   
       if found.empty?
         nil
@@ -58,53 +66,67 @@ module HashQuery
       end
     end
 
-  end
-
-  class Query
-
-    def _hash_y?(node)
+    def hash_y?(node)
       node.class.ancestors.include?(Hash)
     end
   
-    def _array_y?(node)
+    def array_y?(node)
       node.class.ancestors.include?(Array)
     end
   
-    def _descend(selectors, node, found)
-      return if node.nil? || (!_hash_y?(node) && !_array_y?(node))
-      _descend_array(selectors, node, found) if _array_y?(node)
-      _descend_hash(selectors, node, found)  if _hash_y?(node)
+    def descend(selectors, node, found)
+      return if node.nil? || (!hash_y?(node) && !array_y?(node))
+      descend_array(selectors, node, found) if array_y?(node)
+      descend_hash(selectors, node, found)  if hash_y?(node)
       return found
     end
   
-    def _descend_array(selectors, node, found)
+    def descend_array(selectors, node, found)
       node.each do |a|
-        _descend(selectors, a, found)
+        descend(selectors, a, found)
       end
     end
   
-    def _selector_with_type(selector)
-      selector.split(':')
-    end
-  
-    def _descend_hash(selectors, node, found)
+    def descend_hash(selectors, node, found)
       selectors = selectors.dup
-  
-      key, type = _selector_with_type(selectors.first)
-      #Object.module_eval("::#{$1}", __FILE__, __LINE__)
-      if node.has_key?(key) && node[key].is_a?(type)
-        selectors.shift
+
+      if selectors.first.match?(node)
+        selector = selectors.shift
         if selectors.size == 0
-          found << node[key]
+          found << selector.match!(node)
         else
-          _descend(selectors, node[key], found)
+          descend(selectors, selector.match!(node), found)
         end
       else
-        node.select { |k, node| _hash_y?(node) || _array_y?(node) }.each do |k, node| 
-          _descend(selectors, node, found)
+        node.select { |k, node| hash_y?(node) || array_y?(node) }.each do |k, node| 
+          descend(selectors, node, found)
         end
       end
     end
   end
 
+  class Selector
+
+    def self.parse(selectors)
+      selectors.split(/ /).map { |matcher| new(matcher) }
+    end
+
+    def initialize(matcher)
+      @key, @type = matcher.split(':')
+      @type = Object.module_eval("::#{@type.capitalize}", __FILE__, __LINE__) if @type
+    end
+
+    def match?(node)
+      node.has_key?(@key) && (!@type || node[@key].is_a?(@type))
+    end
+
+    def match!(node)
+      node[@key]
+    end
+  end
+
+end
+
+class Hash
+  include HashQuery::Extension
 end
