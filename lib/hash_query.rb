@@ -40,9 +40,14 @@ module HashQuery
     #     entity.query('a:string')
     #
     # Returns a value or collection of values that are found.
-    def query(selectors)
+    def query_values(selectors)
       @_query ||= HashQuery::Query.new(self)
       @_query.query(selectors)
+    end
+
+    def query_value(selectors)
+      values = query_values(selectors)
+      values && values.first
     end
 
   end
@@ -59,8 +64,6 @@ module HashQuery
   
       if found.empty?
         nil
-      elsif found.size == 1
-        found.first
       else
         found
       end
