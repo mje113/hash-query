@@ -123,4 +123,11 @@ class TestHquery < MiniTest::Unit::TestCase
     end
   end
 
+  def test_changed_hash_after_initialization
+    hash = { 'a' => 1, 'b' => 2, 'c' => 3 }
+    assert_equal 2, hash.query('b')
+    hash['b'] = 3
+    assert_equal 3, hash.query('b')
+  end
+
 end
