@@ -115,11 +115,18 @@ module HashQuery
 
     def initialize(matcher)
       @key, @type = matcher.split(':')
-      @type = Object.module_eval("::#{@type.capitalize}", __FILE__, __LINE__) if @type
+      if @type
+        @type = case @type
+                when 'boolean'
+                  [FalseClass, TrueClass]
+                else
+                  [Object.module_eval("::#{@type.capitalize}", __FILE__, __LINE__)]
+                end
+      end
     end
 
     def match?(node)
-      node.has_key?(@key) && (!@type || node[@key].is_a?(@type))
+      node.has_key?(@key) && (!@type || @type.any? { |type| node[@key].is_a?(type) })
     end
 
     def match!(node)

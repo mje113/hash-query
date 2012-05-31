@@ -134,4 +134,12 @@ class TestHquery_value < MiniTest::Unit::TestCase
     assert_equal 3, hash.query_value('b')
   end
 
+  def test_boolean_match
+    hash = { 'a' => true, 'b' => false, 'c' => 'true' }
+
+    assert_equal true,  hash.query_value('a:boolean')
+    assert_equal false, hash.query_value('b:boolean')
+    assert_equal nil,   hash.query_value('c:boolean')
+  end
+
 end
