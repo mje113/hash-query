@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = 'hash-query'
   gem.require_paths = ['lib']
   gem.version       = HashQuery::VERSION
+
+  gem.add_development_dependency 'rake'
 end
