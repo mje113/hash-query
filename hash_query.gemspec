@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
   gem.version       = HashQuery::VERSION
 
   gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'coveralls'
 end
