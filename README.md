@@ -1,24 +1,48 @@
-# Hquery
+# Hash Query
 
-TODO: Write a gem description
+[![Build Status](https://travis-ci.org/[mje113]/[hash-query].png)](https://travis-ci.org/[mje113]/[hash-query])
+[![Code Climate](https://codeclimate.com/github/mje113/hash-query.png)](https://codeclimate.com/github/mje113/hash-query)
+[![Coverage Status](https://coveralls.io/repos/mje113/hash-query/badge.png)](https://coveralls.io/r/mje113/hash-query)
+[![Dependency Status](https://gemnasium.com/mje113/hash-query.png)](https://gemnasium.com/mje113/hash-query)
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'hquery'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install hquery
+Provides a css-like selector system for querying values out of deeply nested hashes.
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'hash_query'
+
+hash = { 
+  a: 1, 
+  b: { 
+    c: {
+      d: { 
+        e: 2, 
+        f: 3 
+      }
+    },
+    cc: [
+      3,
+      {
+        g: 6,
+        h: 7,
+        i: => [ 8, 9, 10, 11 ]
+      },
+      4,
+      5
+    ]
+  }
+}
+```
+
+Requiring hash_query will provide two new methods, Hash#query_value and Hash#query_values.  Both methods take a single string to represent a key or keys to be found in the hash.
+
+To find a the first key match:
+```ruby
+hash.query_value('e')   # => 2
+hash.query_value('c d') # => { e: 2, f: 3 }
+```
+
 
 ## Contributing
 

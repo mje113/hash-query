@@ -11,7 +11,7 @@ module HashQuery
     #
     # Examples
     #
-    #     entity = { 
+    #     hash = { 
     #       :a => 1, 
     #       :b => { 
     #         :c => {
@@ -31,12 +31,12 @@ module HashQuery
     #           5
     #         ]
     #       }
-    #     }.to_entity
-    #     entity.query('a')         # => 1
-    #     entity.query('a b c d e') # => 2
-    #     entity.query('c d e')     # => 2
-    #     entity.query('a>string')
-    #     entity.query('a:string')
+    #     }
+    #     hash.query_values('a')         # => 1
+    #     hash.query_values('a b c d e') # => 2
+    #     hash.query_values('c d e')     # => 2
+    #     hash.query_values('a>string')
+    #     hash.query_values('a:string')
     #
     # Returns a value or collection of values that are found.
     def query_values(selectors)
