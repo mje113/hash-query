@@ -1,6 +1,6 @@
 # Hash Query
 
-[![Build Status](https://travis-ci.org/[mje113]/[hash-query].png)](https://travis-ci.org/[mje113]/[hash-query])
+[![Build Status](https://travis-ci.org/mje113/hash-query.png)](https://travis-ci.org/mje113/hash-query)
 [![Code Climate](https://codeclimate.com/github/mje113/hash-query.png)](https://codeclimate.com/github/mje113/hash-query)
 [![Coverage Status](https://coveralls.io/repos/mje113/hash-query/badge.png)](https://coveralls.io/r/mje113/hash-query)
 [![Dependency Status](https://gemnasium.com/mje113/hash-query.png)](https://gemnasium.com/mje113/hash-query)
